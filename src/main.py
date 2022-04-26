@@ -1,26 +1,49 @@
 #!/usr/bin/python3
-import sys
 from tkinter import Button
 from pynput.mouse import Listener
+import tkinter as tk
+
+
+move_dic = dict()
+move_dic["max"] = 0
+move_dic["min"] = 0
+click_dic = dict()
+click_dic["max"] = 0
+click_dic["min"] = 0
 
 def on_move(x, y):
-    print ("Mouse moved to ({0}, {1})".format(x, y))
+    dic_key = (int(x) , int(y))
+    if dic_key in move_dic.keys():
+        move_dic[dic_key] += 1
+        if move_dic["max"] < move_dic[dic_key]:
+            move_dic["max"] = move_dic[dic_key]
+    else:
+        move_dic[dic_key] = 1
+
 
 def on_click(x, y, button, pressed):
-    print(type(x) , type(y))
-    x_coord = int(x)
-    print(x_coord)    
+    dic_key = (int(x) , int(y))
     if pressed:
-        print ('Mouse clicked at ({0}, {1}) with {2}'.format(x, y, button))
+        if dic_key in click_dic.keys():
+            click_dic[dic_key] += 1
+            if click_dic["max"] < click_dic[dic_key]:
+                click_dic["max"] = click_dic[dic_key]
+        else:
+            click_dic[dic_key] = 1
 
 def on_scroll(x, y, dx, dy):
-    print ('Mouse scrolled at ({0}, {1})({2}, {3})'.format(x, y, dx, dy))
-
-#Main
-def main(args):
+    listener.stop()
+    click_dic["min"] = click_dic["max"]
+    move_dic["min"] = move_dic["max"]
+    for ele in click_dic.values():
+        if ele < click_dic["min"]:
+            click_dic["min"] = ele
     
-    with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
-        listener.join()
+    for ele in move_dic.values():
+        if ele < move_dic["min"]:
+            move_dic["min"] = ele
+    print("Move dict: \n" , move_dic, "\n\n")
+    print("Click dict: \n" , click_dic)
 
-if __name__ == '__main__':
-    main(sys.argv[1:])
+with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
+    listener.join()
