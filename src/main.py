@@ -1,8 +1,5 @@
 #!/usr/bin/python3
-from tkinter import Button
 from pynput.mouse import Listener
-import tkinter as tk
-
 
 move_dic = dict()
 move_dic["max"] = 0
@@ -19,7 +16,6 @@ def on_move(x, y):
             move_dic["max"] = move_dic[dic_key]
     else:
         move_dic[dic_key] = 1
-
 
 def on_click(x, y, button, pressed):
     dic_key = (int(x) , int(y))
