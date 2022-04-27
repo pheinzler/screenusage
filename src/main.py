@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 from pynput.mouse import Listener
 from PIL import Image
-import PIL
 
 move_dic = dict()
 move_dic["max"] = 0
@@ -10,6 +9,7 @@ click_dic = dict()
 click_dic["max"] = 0
 click_dic["min"] = 0
 
+#heatmap = Image.new(mode='RGB' , size=(3072 , 1920), color='white')
 heatmap = Image.new(mode='RGB' , size=(3072 , 1920), color='white')
 def on_move(x, y):
     dic_key = (int(x) , int(y))
@@ -52,3 +52,4 @@ def on_scroll(x, y, dx, dy):
 
 with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
     listener.join()
+    
