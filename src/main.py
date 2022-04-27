@@ -11,7 +11,6 @@ click_dic["max"] = 0
 click_dic["min"] = 0
 
 heatmap = Image.new(mode='RGB' , size=(3072 , 1920), color='white')
-heatmap.save("heatmap.png")
 def on_move(x, y):
     dic_key = (int(x) , int(y))
     if dic_key in move_dic.keys():
@@ -20,6 +19,8 @@ def on_move(x, y):
             move_dic["max"] = move_dic[dic_key]
     else:
         move_dic[dic_key] = 1
+    
+    heatmap.putpixel(dic_key , (255 , 255 , 0))
 
 def on_click(x, y, button, pressed):
     dic_key = (int(x) , int(y))
@@ -30,6 +31,8 @@ def on_click(x, y, button, pressed):
                 click_dic["max"] = click_dic[dic_key]
         else:
             click_dic[dic_key] = 1
+
+        heatmap.putpixel(dic_key , (255 , 0 , 0))
 
 def on_scroll(x, y, dx, dy):
     listener.stop()
@@ -44,6 +47,8 @@ def on_scroll(x, y, dx, dy):
             move_dic["min"] = ele
     print("Move dict: \n" , move_dic, "\n\n")
     print("Click dict: \n" , click_dic)
+
+    heatmap.save("heatmap.png")
 
 with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
     listener.join()
