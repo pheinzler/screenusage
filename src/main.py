@@ -13,6 +13,14 @@ move_dic = data_arr[0]
 click_dic = data_arr[1]
 #load heatmap
 heatmap = Image.open("heatmap.png")
+image = Image.new('RGB', ())
+def create_image():
+    for coordinate in move_dic.keys():
+        if coordinate != "max" and coordinate != "min":
+            heatmap.putpixel(coordinate , (255 , 255 , 0))
+    for coordinate in click_dic.keys():
+        if coordinate != "max" and coordinate != "min":
+            heatmap.putpixel(coordinate , (255 , 0 , 0))
 
 #mouse movement
 def on_move(x, y):
@@ -24,8 +32,6 @@ def on_move(x, y):
     else:
         move_dic[dic_key] = 1
     
-    heatmap.putpixel(dic_key , (255 , 255 , 0))
-
 #clicking
 def on_click(x, y, button, pressed):
     dic_key = (int(x) , int(y))
@@ -36,8 +42,6 @@ def on_click(x, y, button, pressed):
                 click_dic["max"] = click_dic[dic_key]
         else:
             click_dic[dic_key] = 1
-
-        heatmap.putpixel(dic_key , (255 , 0 , 0))
 
 #ending service rn
 def on_scroll(x, y, dx, dy):
@@ -54,8 +58,11 @@ def on_scroll(x, y, dx, dy):
     print("Move dict: \n" , move_dic, "\n\n")
     print("Click dict: \n" , click_dic)
 
+    #colourize pixels in image and safe it
+    create_image()
     heatmap.save("heatmap.png")
 
+    #store data
     with open("./data.pkl", "wb") as data:
         data_to_store = [move_dic , click_dic]
         pickle.dump(data_to_store , data)
