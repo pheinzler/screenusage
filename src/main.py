@@ -1,16 +1,16 @@
 #!/usr/bin/python3
 from pynput.mouse import Listener
 from PIL import Image
+import json
 
-move_dic = dict()
-move_dic["max"] = 0
-move_dic["min"] = 0
-click_dic = dict()
-click_dic["max"] = 0
-click_dic["min"] = 0
+# loading JSON Data sets
+with open("data/movement.json", "r") as moveJsonFile:
+    move_dic = json.load(moveJsonFile)
+with open("data/clicking.json", "r") as clickJsonFile:
+    click_dic = json.load(clickJsonFile)
 
-#heatmap = Image.new(mode='RGB' , size=(3072 , 1920), color='white')
 heatmap = Image.new(mode='RGB' , size=(3072 , 1920), color='white')
+
 def on_move(x, y):
     dic_key = (int(x) , int(y))
     if dic_key in move_dic.keys():
@@ -49,6 +49,10 @@ def on_scroll(x, y, dx, dy):
     print("Click dict: \n" , click_dic)
 
     heatmap.save("heatmap.png")
+    with open("data/movement.json", "r") as moveJsonFile:
+        json.dump(move_dic , moveJsonFile)
+    with open("data/clicking.json", "r") as clickJsonFile:
+        json.dump(click_dic , clickJsonFile)
 
 with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
     listener.join()
