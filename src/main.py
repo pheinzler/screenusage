@@ -4,10 +4,12 @@ from PIL import Image
 import json
 
 # loading JSON Data sets
-with open("./data/movement.json", "r") as moveJsonFile:
+""" with open("./movement.json", "r") as moveJsonFile:
     move_dic = json.load(moveJsonFile)
-with open("./data/clicking.json", "r") as clickJsonFile:
+    moveJsonFile.close()
+with open("./clicking.json", "r") as clickJsonFile:
     click_dic = json.load(clickJsonFile)
+    clickJsonFile.close() """
 
 heatmap = Image.open("heatmap.png")
 
@@ -52,7 +54,7 @@ def on_scroll(x, y, dx, dy):
     with open("data/movement.json", "r") as moveJsonFile:
         json.dump(move_dic , moveJsonFile)
     with open("data/clicking.json", "r") as clickJsonFile:
-        json.dump(click_dic , clickJsonFile)
+        json.dump(click_dic , clickJsonFile, indent=2)
 
 with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
     listener.join()
