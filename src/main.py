@@ -1,18 +1,20 @@
 #!/usr/bin/python3
 from pynput.mouse import Listener
 from PIL import Image
-import json
+import pickle
 
 # loading JSON Data sets
-""" with open("./movement.json", "r") as moveJsonFile:
-    move_dic = json.load(moveJsonFile)
-    moveJsonFile.close()
-with open("./clicking.json", "r") as clickJsonFile:
-    click_dic = json.load(clickJsonFile)
-    clickJsonFile.close() """
+with open("./data.pkl" , "rb") as data:
+    data_arr = pickle.load(data)
+    data.close() 
 
+#Store move and click coordinates in separate dictionaries
+move_dic = data_arr[0]
+click_dic = data_arr[1]
+#load heatmap
 heatmap = Image.open("heatmap.png")
 
+#mouse movement
 def on_move(x, y):
     dic_key = (int(x) , int(y))
     if dic_key in move_dic.keys():
@@ -24,6 +26,7 @@ def on_move(x, y):
     
     heatmap.putpixel(dic_key , (255 , 255 , 0))
 
+#clicking
 def on_click(x, y, button, pressed):
     dic_key = (int(x) , int(y))
     if pressed:
@@ -36,6 +39,7 @@ def on_click(x, y, button, pressed):
 
         heatmap.putpixel(dic_key , (255 , 0 , 0))
 
+#ending service rn
 def on_scroll(x, y, dx, dy):
     listener.stop()
     click_dic["min"] = click_dic["max"]
@@ -51,10 +55,11 @@ def on_scroll(x, y, dx, dy):
     print("Click dict: \n" , click_dic)
 
     heatmap.save("heatmap.png")
-    with open("data/movement.json", "r") as moveJsonFile:
-        json.dump(move_dic , moveJsonFile)
-    with open("data/clicking.json", "r") as clickJsonFile:
-        json.dump(click_dic , clickJsonFile, indent=2)
+
+    with open("./data.pkl", "wb") as data:
+        data_to_store = [move_dic , click_dic]
+        pickle.dump(data_to_store , data)
+        data.close()
 
 with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
     listener.join()
