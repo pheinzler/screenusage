@@ -4,12 +4,12 @@ from PIL import Image
 import json
 
 # loading JSON Data sets
-with open("data/movement.json", "r") as moveJsonFile:
+with open("./data/movement.json", "r") as moveJsonFile:
     move_dic = json.load(moveJsonFile)
-with open("data/clicking.json", "r") as clickJsonFile:
+with open("./data/clicking.json", "r") as clickJsonFile:
     click_dic = json.load(clickJsonFile)
 
-heatmap = Image.new(mode='RGB' , size=(3072 , 1920), color='white')
+heatmap = Image.open("heatmap.png")
 
 def on_move(x, y):
     dic_key = (int(x) , int(y))
