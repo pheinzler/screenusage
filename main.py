@@ -4,20 +4,23 @@ from pynput.mouse import Listener
 from PIL import Image
 import pickle
 
+#create new data 
 if len(argv) > 1:
     #load heatmap
     heatmap = Image.new('RGB', (3072, 1920), "white")
+    move_dic = {"max":0}
+    click_dic = {"max":0}
+
+#use old data
 else:
     heatmap = Image.open("heatmap.png")
-
-# loading JSON Data sets
-with open("./data.pkl" , "rb") as data:
-    data_arr = pickle.load(data)
-    data.close() 
-
-#Store move and click coordinates in separate dictionaries
-move_dic = data_arr[0]
-click_dic = data_arr[1]
+    # loading Pickle Data sets
+    with open("./data.pkl" , "rb") as data:
+        data_arr = pickle.load(data)
+        data.close() 
+        #Store move and click coordinates in separate dictionaries
+        move_dic = data_arr[0]
+        click_dic = data_arr[1]
 
 def create_image():
     for coordinate in move_dic.keys():
@@ -63,15 +66,24 @@ def on_scroll(x, y, dx, dy):
     print("Move dict: \n" , move_dic, "\n\n")
     print("Click dict: \n" , click_dic)
 
-    #colourize pixels in image and safe it
+    #colourize pixels in image and safe data
     create_image()
-    heatmap.save("heatmap.png")
-
+    if len(argv) > 1:
     #store data
-    with open("./data.pkl", "wb") as data:
-        data_to_store = [move_dic , click_dic]
-        pickle.dump(data_to_store , data)
-        data.close()
+        with open("./data_new.pkl", "wb") as data:
+            data_to_store = [move_dic , click_dic]
+            pickle.dump(data_to_store , data)
+            data.close()
+            heatmap.save("heatmap_new.png")
+            
+    else:
+        #store data
+        with open("./data.pkl", "wb") as data:
+            data_to_store = [move_dic , click_dic]
+            pickle.dump(data_to_store , data)
+            data.close()
+            heatmap.save("heatmap.png")
+
 
 with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
     listener.join()
