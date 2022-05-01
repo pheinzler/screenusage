@@ -4,10 +4,18 @@ from pynput.mouse import Listener
 from PIL import Image
 import pickle
 
+#Constants
+WIDTH = 3072
+HEIGHT = 1920
+# Colours
+YELLOW = (255,255,0)
+RED = (255,0,0)
+GREEN = (34 , 193 , 34)
+
 #create new data 
 if len(argv) > 1:
     #load heatmap
-    heatmap = Image.new('RGB', (3072, 1920), "white")
+    heatmap = Image.new('RGB', (WIDTH, HEIGHT), "white")
     move_dic = {"max":0}
     click_dic = {"max":0}
 
@@ -22,13 +30,25 @@ else:
         move_dic = data_arr[0]
         click_dic = data_arr[1]
 
+def colourize_more_pixels(x , y , colour , square = 3):
+    if(x > WIDTH - square or y > HEIGHT - square):
+        heatmap.putpixel((x,y) , colour)
+    else:
+        for i in range(x , x + square):
+            for j in range(y , y + square):
+                heatmap.putpixel((i,j) , colour)
+
 def create_image():
     for coordinate in move_dic.keys():
         if coordinate != "max" and coordinate != "min":
-            heatmap.putpixel(coordinate , (255 , 255 , 0))
+            x = coordinate[0]
+            y = coordinate[1]
+            colourize_more_pixels(x,y, GREEN)
     for coordinate in click_dic.keys():
         if coordinate != "max" and coordinate != "min":
-            heatmap.putpixel(coordinate , (255 , 0 , 0))
+            x = coordinate[0]
+            y = coordinate[1]
+            colourize_more_pixels(x,y, RED)
 
 #mouse movement
 def on_move(x, y):
