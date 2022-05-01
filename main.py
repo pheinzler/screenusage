@@ -1,7 +1,14 @@
 #!/usr/bin/python3
+from sys import argv
 from pynput.mouse import Listener
 from PIL import Image
 import pickle
+
+if len(argv) > 1:
+    #load heatmap
+    heatmap = Image.new('RGB', (3072, 1920), "white")
+else:
+    heatmap = Image.open("heatmap.png")
 
 # loading JSON Data sets
 with open("./data.pkl" , "rb") as data:
@@ -11,9 +18,7 @@ with open("./data.pkl" , "rb") as data:
 #Store move and click coordinates in separate dictionaries
 move_dic = data_arr[0]
 click_dic = data_arr[1]
-#load heatmap
-heatmap = Image.open("heatmap.png")
-image = Image.new('RGB', ())
+
 def create_image():
     for coordinate in move_dic.keys():
         if coordinate != "max" and coordinate != "min":
